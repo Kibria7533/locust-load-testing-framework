@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  master:
+    #image: locustio/locust
+    build: .
+    ports:
+     - "8090:8089"
+    command: -f /mnt/locust/locustfile.py --master -H http://master:8089
+  
+  worker:
+    #image: locustio/locust
+    build: .
+    command: -f /mnt/locust/locustfile.py --worker --master-host master
