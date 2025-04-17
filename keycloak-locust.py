@@ -25,8 +25,3 @@ class KeycloakUser(HttpUser):
         else:
             print("Login failed:", response.status_code, response.text)
     
-    @task
-    def get_admin_console(self):
-        # For example, load the admin console page.
-        # (Update this endpoint if needed for your environment.)
-        self.client.get("/admin/master/console/")
