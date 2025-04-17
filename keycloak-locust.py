@@ -1,14 +1,12 @@
 from locust import HttpUser, task, between
 
 class KeycloakUser(HttpUser):
-    wait_time = between(1, 2)
-    
+    wait_time = between(0.01, 0.05)
+
     def on_start(self):
-        # Simulate login to Keycloak by requesting an access token.
         self.login()
-    
+
     def login(self):
-        # POST request to the token endpoint.
         response = self.client.post(
             "/realms/master/protocol/openid-connect/token",
             data={
@@ -20,8 +18,11 @@ class KeycloakUser(HttpUser):
         )
         if response.status_code == 200:
             token = response.json().get("access_token")
-            # Optionally, use the token in subsequent requests.
             self.client.headers.update({"Authorization": f"Bearer {token}"})
         else:
             print("Login failed:", response.status_code, response.text)
-    
+
+    @task
+    def get_token_loop(self):
+        # This will be executed repeatedly after login
+        self.login()
